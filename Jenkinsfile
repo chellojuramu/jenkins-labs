@@ -15,7 +15,7 @@ pipeline {
     parameters {
         string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should i say hello to?')
         text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-        booleanParam(name: 'TOOGLE', defaultValue: true, description: 'Toogle this value')
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
         choice(name: 'CHOICE',choices: ['One', 'Two', 'Three'], description: 'Pick something')
         password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
 
@@ -39,7 +39,7 @@ pipeline {
                         echo "Running test"
                         echo "Hello ${params.PERSON}"
                         echo "Biography: ${params.BIOGRAPHY}"
-                        echo "Toogle Value: ${params.TOGGLE}"
+                        echo "Toggle Value: ${params.TOGGLE}"
                         echo "Choice selected: ${params.CHOICE}"
 
                         echo "Password: ${params.PASSWORD}"
