@@ -1,8 +1,8 @@
 pipeline {
     agent {
         node {
-            label 'ROBOSHOP'
-        }
+            label 'roboshop' 
+        } 
     }
     environment {
         COURSE = "Jenkins"
@@ -10,63 +10,73 @@ pipeline {
     options {
         disableConcurrentBuilds()
         timeout(time: 5, unit: 'MINUTES')
-
     }
     parameters {
-        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should i say hello to?')
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
         text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-        choice(name: 'CHOICE',choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        booleanParam(name: 'DEPLOY', defaultValue: false, description: 'Toggle this value')
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
         password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-
     }
     stages {
-        stage('Build'){
+        stage('Build') {
             steps {
                 script{
                     sh """
-                        echo "Building application"
-                        echo "Course name: $COURSE"
+                        echo "Building"
+                        echo $COURSE
                         sleep 10
-                      """
+                    """
                 }
             }
         }
-        stage('Test'){
-            steps{
-                script{
+        stage('Test') {
+            steps {
+               script{
                     sh """
-                        echo "Running test"
+                        echo "Testing"
                         echo "Hello ${params.PERSON}"
                         echo "Biography: ${params.BIOGRAPHY}"
-                        echo "Toggle Value: ${params.TOGGLE}"
-                        echo "Choice selected: ${params.CHOICE}"
-
+                        echo "Toggle: ${params.TOGGLE}"
+                        echo "Choice: ${params.DEPLOY}" 
                         echo "Password: ${params.PASSWORD}"
                     """
                 }
             }
         }
-        stage('Deploy'){
-            steps{
+        stage('Deploy') {
+            when {
+                expression { "${params.DEPLOY}" == "true" }
+            }
+
+            /* input {
+                message "Should we continue?"
+                ok "Yes, we should."
+                submitter "alice,bob"
+                parameters {
+                    string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+                }
+            } */
+            steps {
                 script{
                     sh """
-                        echo "Deploying application"
+                        echo "Deploying"
                     """
                 }
             }
         }
     }
-    post {
-        always {
-            echo 'Pipeline execution Completed'
+
+    // post build
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
         }
         success {
-            echo 'Pipeline executed successfully'
+            echo "pipeline success"
         }
         failure {
-            echo 'pipeline execution failed'
+            echo "pipeline failure"
         }
     }
-
 }
